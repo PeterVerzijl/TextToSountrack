@@ -6,7 +6,10 @@ import jahspotify.media.Track;
 import jahspotify.services.JahSpotifyService;
 import jahspotify.services.MediaHelper;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class SpotifyHandler {
     private JahSpotify jahSpotify;
@@ -16,6 +19,7 @@ public class SpotifyHandler {
     }
 
     public SpotifyHandler() {
+        System.out.println("Initializing spotify handler...");
         // Determine the tempfolder and make sure it exists.
         //File temp = new File(new File(Main.class.getResource("TextToSoundtrack.class").getFile()).getParentFile(), "temp");
         File temp = new File("C:\\Development", "temp");
@@ -25,7 +29,25 @@ public class SpotifyHandler {
         JahSpotifyService.initialize(temp);
 
         jahSpotify = JahSpotifyService.getInstance().getJahSpotify();
-        ConnectionListener connectionListener = new ConnectionListener();
+
+        // Ask for the username and password.
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String username = "", password = "";
+        try {
+            if (username == null || username.isEmpty()) {
+                System.out.print("Username: ");
+                username = in.readLine();
+            }
+            if (password == null || password.isEmpty()) {
+                System.out.print("Password: ");
+                password = in.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        ConnectionListener connectionListener = new ConnectionListener(username, password);
         jahSpotify.addConnectionListener(connectionListener);
         MediaHelper.waitFor(connectionListener, 10);
         if (!jahSpotify.isLoggedIn()) {
@@ -33,12 +55,16 @@ public class SpotifyHandler {
             System.exit(1);
         }
 
-        playTrack("6JEK0CvvjDjjMUBFoXShNZ");
+        //playTrack("spotify:track:6JEK0CvvjDjjMUBFoXShNZ");
+    }
+
+    private void getLogin() {
+
     }
 
     public void playTrack(String trackId) {
         // Get a track.
-        Track t = JahSpotifyService.getInstance().getJahSpotify().readTrack(Link.create("spotify:track:" + trackId));
+        Track t = JahSpotifyService.getInstance().getJahSpotify().readTrack(Link.create(trackId));
         // Wait for 10 seconds or until the track is loaded.
         MediaHelper.waitFor(t, 10);
         // If the track is loaded, play it.

@@ -4,28 +4,18 @@ import jahspotify.AbstractConnectionListener;
 import jahspotify.media.Loadable;
 import jahspotify.services.JahSpotifyService;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
 public class ConnectionListener extends AbstractConnectionListener implements Loadable {
     private boolean loaded;
+    private String username;
+    private String password;
+
+    public ConnectionListener(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     @Override
     public void initialized(final boolean initialized) {
-        // Ask for the username and password.
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        String username = null, password = null;
-        try {
-            System.out.print("Username: ");
-            username = in.readLine();
-            System.out.print("Password: ");
-            password = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
         // When JahSpotify is initialized, we can attempt to login.
         if (initialized) {
             JahSpotifyService.getInstance().getJahSpotify().login(username, password, null, false);

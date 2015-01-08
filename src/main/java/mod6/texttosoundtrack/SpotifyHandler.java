@@ -21,8 +21,7 @@ public class SpotifyHandler {
     public SpotifyHandler() {
         System.out.println("Initializing spotify handler...");
         // Determine the tempfolder and make sure it exists.
-        //File temp = new File(new File(Main.class.getResource("TextToSoundtrack.class").getFile()).getParentFile(), "temp");
-        File temp = new File("C:\\Development", "temp");
+        File temp = new File(System.getProperty("java.io.tmpdir"));
         temp.mkdirs();
 
         // Start JahSpotify

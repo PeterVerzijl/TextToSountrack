@@ -5,10 +5,7 @@ import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class to read an .epub file.
@@ -18,11 +15,13 @@ import java.util.List;
  */
 public class ReadEpub {
 	private Book book = null;
-	private ArrayList<String> lines = null;
+	private HashMap<String,String> lines = null;
 	private int pageNumber = 0;
 	private int paraGraph = 0;
 	private static final String SAVED_PAGES_FILE_PATH = "res/savedPages.sav";
 	private static final int MAX_NUM_WORDS = 100;
+
+	private ThemeClassifier themeClassifier;
 
 	/**
 	 * The constructor for this class.
@@ -34,6 +33,7 @@ public class ReadEpub {
 		EpubReader epubReader = new EpubReader();
 		try {
 			book = epubReader.readEpub(new FileInputStream(file));
+			themeClassifier = new ThemeClassifier("./TrainingData/");
 			setUpList();
 		} catch (IOException e) {
 		}
@@ -60,7 +60,7 @@ public class ReadEpub {
 				line.replaceFirst("\\s\\s\\s", "");
 			}
 
-			lines = new ArrayList<String>();
+			lines = new HashMap<String, String>();
 			int words = 0;
 			int currentPara = 0;
 			String line = "";
@@ -69,7 +69,7 @@ public class ReadEpub {
 				line = "";
 				while (words < MAX_NUM_WORDS) {
 					if(currentPara == tmp.size()) {
-						lines.add(line);
+						lines.put(line,themeClassifier.getCategory(line));
 						break;
 					}
 					words += tmp.get(currentPara).replaceAll("(<[^p][^<>]*>)", "").split(" ").length;
@@ -82,13 +82,12 @@ public class ReadEpub {
 							line = tmp.get(currentPara).replaceAll("(<[^p][^<>]*>)", "");
 							currentPara++;
 						}
-						lines.add(line);
+						lines.put(line, themeClassifier.getCategory(line));
 						break;
 					}
 				}
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -118,7 +117,19 @@ public class ReadEpub {
 			setUpList();
 			paraGraph = 0;
 		}
-		return lines.get(paraGraph).replaceAll("(<[^p][^<>]*>)", "");
+		int count = 0;
+		String page = "";
+		String mood = "";
+		for(String s : lines.keySet()) {
+			if(count == paraGraph) {
+				page = s;
+				mood = lines.get(s);
+				break;
+			}
+			count++;
+		}
+		System.out.println(mood);
+		return page.replaceAll("(<[^p][^<>]*>)", "");
 	}
 
 	/**
@@ -134,7 +145,19 @@ public class ReadEpub {
 			setUpList();
 			paraGraph = lines.size() - 1;
 		}
-		return lines.get(paraGraph).replaceAll("(<[^p][^<>]*>)", "");
+		int count = 0;
+		String page = "";
+		String mood = "";
+		for(String s : lines.keySet()) {
+			if(count == paraGraph) {
+				page = s;
+				mood = lines.get(s);
+				break;
+			}
+			count++;
+		}
+		System.out.println(mood);
+		return page.replaceAll("(<[^p][^<>]*>)", "");
 	}
 
 	/**

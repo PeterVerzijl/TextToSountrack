@@ -1,6 +1,6 @@
 package mod6.texttosoundtrack;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Created by Peter Verzijl on 12-1-2015.

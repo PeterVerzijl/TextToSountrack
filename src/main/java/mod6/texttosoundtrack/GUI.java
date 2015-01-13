@@ -1,26 +1,5 @@
 package mod6.texttosoundtrack;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.FlowLayout;
-import java.awt.GraphicsEnvironment;
-import java.awt.GridLayout;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -30,6 +9,11 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * A class to create a eReader window
@@ -84,11 +68,11 @@ public class GUI extends JFrame {
 		JMenuBar menubar = new JMenuBar();
 		
 		// Popup Menu
-		JPopupMenu popup = new JPopupMenu();
+		final JPopupMenu popup = new JPopupMenu();
 		popup.setLayout(new GridLayout(4,1));
 		
 		JLabel fontLabel = new JLabel("Change font:");
-		JComboBox<String> fontChooser = new JComboBox<String>();
+		final JComboBox<String> fontChooser = new JComboBox<String>();
 		String fonts[] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 		for(int i=0; i<fonts.length; i++) {
 			fontChooser.addItem(fonts[i]);
@@ -96,7 +80,7 @@ public class GUI extends JFrame {
 		fontChooser.setSelectedItem(textFont);
 		
 		JLabel fontSize = new JLabel("Change font size:");
-		JSlider sizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, textSize);
+		final JSlider sizeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, textSize);
 		sizeSlider.setMinorTickSpacing(2);
 		sizeSlider.setMajorTickSpacing(20);
 		sizeSlider.setPaintTicks(true);
@@ -104,9 +88,9 @@ public class GUI extends JFrame {
 		sizeSlider.setToolTipText("Font size: " + sizeSlider.getValue());
 		
 		JLabel fontLayout = new JLabel("Change font layout:");
-		JCheckBox layoutCheckBold = new JCheckBox("Bold",isTextBold);
-		JCheckBox layoutCheckItalic = new JCheckBox("Italic",isTextItalic);
-		JCheckBox layoutCheckUnderlined = new JCheckBox("Underlined",isTextUnderlined);
+		final JCheckBox layoutCheckBold = new JCheckBox("Bold",isTextBold);
+		final JCheckBox layoutCheckItalic = new JCheckBox("Italic",isTextItalic);
+		final JCheckBox layoutCheckUnderlined = new JCheckBox("Underlined",isTextUnderlined);
 		
 		JPanel changeFont = new JPanel();
 		changeFont.add(fontLabel);
@@ -240,10 +224,10 @@ public class GUI extends JFrame {
         
         JMenu menuOpenRecent = new JMenu("Open Recent");
         
-        HashMap<String, String> recents = getRecents();
+        final HashMap<String, String> recents = getRecents();
         JMenuItem[] recentMenuItems = new JMenuItem[recents.size()];
         int count = 0;
-        for(String title : recents.keySet()) {
+        for(final String title : recents.keySet()) {
         	recentMenuItems[count] = new JMenuItem(title);
         	recentMenuItems[count].setToolTipText("Open " + title);
         	recentMenuItems[count].addActionListener(new ActionListener() {

@@ -1,43 +1,57 @@
 package mod6.texttosoundtrack.echonest;
 
-import com.echonest.api.v4.*;
 import mod6.texttosoundtrack.SpotifyHandler;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class EchonestHandler {
-    private EchoNestAPI echoNest;
     private SpotifyHandler spotifyHandler;
 
-    public static void main(String[] args) throws EchoNestException {
+    public static void main(String[] args) {
         EchonestHandler echonestHandler = new EchonestHandler();
-        echonestHandler.searchSong();
+        //echonestHandler.searchSong();
         //System.out.println(echonestHandler.searchSong());
+        echonestHandler.findTrack();
     }
 
-    public EchonestHandler(){
+    public EchonestHandler() {
         spotifyHandler = new SpotifyHandler();
-        echoNest = new EchoNestAPI("CGV11LMHK97XRE10T");
     }
 
-    public boolean searchSong() {
-        SongParams params = new SongParams();
-        params.add("mood", "happy");
-        params.set("max_speechiness", "0.9");
-        params.add("bucket", "id:spotify");
-        params.add("bucket", "tracks");
+    public boolean findTrack() {
         try {
-            List<Song> songs = echoNest.searchSongs(params);
-            for (Song song : songs) {
-                System.out.println(song);
-                Track track = song.getTrack("spotify-WW");
+            URL url = new URL(
+                    "http://developer.echonest.com/api/v4/song/search?api_key=CGV11LMHK97XRE10T&format=json&" +
+                            "mood=happy&min_instrumentalness=0.95&bucket=id:spotify&bucket=tracks");
+            URLConnection urlConnection = url.openConnection();
+            BufferedReader streamReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            StringBuilder responseStrBuilder = new StringBuilder();
+
+            String inputStr;
+            while ((inputStr = streamReader.readLine()) != null)
+                responseStrBuilder.append(inputStr);
+            //new JSONObject(new JSONParser().parse(responseStrBuilder.toString()));
+            JSONObject json = (JSONObject) JSONValue.parse(responseStrBuilder.toString());
+            System.out.println("Input json: " + json);
+            JSONArray songArray = (JSONArray) ((JSONObject) json.get("response")).get("songs");
+            for (int i = 0; i < songArray.size(); i++) {
+                JSONObject song = (JSONObject) songArray.get(i);
+                String trackId = (String) ((JSONObject) ((JSONArray) song.get("tracks")).get(0)).get("foreign_id");
+                System.out.println("Track id: " + trackId);
                 //Try to play track
-                if (spotifyHandler.playTrack(track.getForeignID())) {
+                if (spotifyHandler.playTrack(trackId)) {
                     return true;
                 }
             }
-            return false;
-        } catch (EchoNestException e) {
+            streamReader.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return false;

@@ -95,7 +95,7 @@ public class ThemeClassifier {
 				currentCategory = entry.getKey();
 			}
 		}
-		return currentCategory;                                 // Return highest probable category
+		return currentCategory.substring(0, currentCategory.indexOf("."));                   // Return highest probable category without the .txt
 	}
 
 	/**

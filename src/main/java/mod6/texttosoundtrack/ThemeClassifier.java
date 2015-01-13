@@ -70,7 +70,7 @@ public class ThemeClassifier {
 		}
 
 		int counter;                                            // Counts the amount of matching words for each category
-		String currentCategory = "No category found!";          // Default error message
+		String currentCategory = "No category found!.";          // Default error message
 		double currentLowestProbability = -1000000000;          // Should be the lowest value possible
 
 		if (words == null || words.size() == 0) {

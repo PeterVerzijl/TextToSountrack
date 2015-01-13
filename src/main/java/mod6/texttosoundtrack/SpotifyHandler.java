@@ -75,7 +75,7 @@ public class SpotifyHandler {
         //trackId = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ";
 
         Link link = Link.create(trackId);
-        System.out.println(link.getType());
+        System.out.println("Track type: " + link.getType());
 
         // Get a track.
         Track track = jahSpotify.readTrack(Link.create(trackId));
@@ -85,17 +85,17 @@ public class SpotifyHandler {
         if (track.isLoaded()) {
             if (track.getTitle() != null && !track.getTitle().isEmpty()) {
                 playbackListener.setLoaded(false);
+
                 jahSpotify.play(track.getId());
                 // Wait until track starts playing to be sure it can actually be played.
-                MediaHelper.waitFor(playbackListener, 10);
-                if (jahSpotify.getStatus() == JahSpotify.PlayerStatus.PLAYING) {
+                MediaHelper.waitFor(playbackListener, 2);
+                if (playbackListener.isLoaded()) {
                     System.out.println(jahSpotify.getStatus() + ", is playing: " + playbackListener.isPlaying());
                     System.out.println("Playing track: " + track + " with id " + track.getId());
                     return true;
                 } else {
                     System.out.println("Could not play that track");
                 }
-                return true;
             } else {
                 System.out.println("Track is not on spotify");
             }

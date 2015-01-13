@@ -16,7 +16,7 @@ public class SpotifyPlaybackListener extends AbstractPlaybackListener implements
 
     @Override
     public void trackStarted(Link link) {
-        super.trackStarted(link);
+        loaded = false;
         System.out.println("Track started! " + link.getType());
         System.out.println("Playing status: " + jahSpotify.getStatus());
     }
@@ -24,19 +24,12 @@ public class SpotifyPlaybackListener extends AbstractPlaybackListener implements
     @Override
     public int addToBuffer(byte[] buffer) {
         loaded = true;
-        System.out.println("Adding bytes to buffer: " + buffer);
         return 0;
     }
 
     @Override
     public void trackEnded(Link link, boolean forcedEnd) {
         System.out.println("Track ended! " + link.getType() + " , " + forcedEnd);
-    }
-
-    @Override
-    public void setAudioFormat(int rate, int channels) {
-        System.out.println("Set audio format!");
-
     }
 
     public boolean isPlaying() {

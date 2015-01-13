@@ -6,6 +6,7 @@ import java.util.*;
 /**
  * Created by Peter Verzijl on 6-1-2015.
  */
+
 public class ThemeClassifier {
 
 	// States of mood
@@ -39,26 +40,47 @@ public class ThemeClassifier {
 	 */
 	public String getCatagory(File file) {
 
+		List<String> wordsInFile = getFileWords(file);                  // Tokenizes and gets the words from a text file
+
+		return calculateCategory(wordsInFile);                          // Return calculated category
+	}
+
+	/**
+	 * Wrapper to get the category of a paragraph
+	 * @param paragraph Tha paragraph that gets tokenized and categorized.
+	 * @return The category that was calculated
+	 */
+	public String getCategory(String paragraph) {
+
+		List<String> wordsInFile = Arrays.asList(getTokens(paragraph)); // Tokenizes and gets the words from a paragraph
+
+		return calculateCategory(wordsInFile);                          // Return calculated category
+	}
+
+	/**
+	 * Calculates a category based on a list of words.
+	 * @param words The list of words to calculate the category of.
+	 * @return Return the found category as a string.
+	 */
+	public String calculateCategory(List<String> words) {
+
 		if (categories.isEmpty()) {
 			System.err.println("The database has not been trained yet! Call the train function first!");
 			return null;
 		}
 
 		int counter;                                            // Counts the amount of matching words for each category
-		String currentCategory = "No category found!";
+		String currentCategory = "No category found!";          // Default error message
 		double currentLowestProbability = -1000000000;          // Should be the lowest value possible
-		List<String> wordsInFile = getFileWords(file);  		// Formula for finding the best fitted mood of the text
-																// Amount of words that also exist in the category / total words in text
-																// Thus: what percentage of words in this text are of this category?
 
-		if (wordsInFile == null || wordsInFile.size() == 0) {
-			System.out.println("Error, no words in file!");
-			return null;
+		if (words == null || words.size() == 0) {
+			System.out.println("Error, no words in file!");     // When no words are in the file, give an error.
+			return currentCategory;                             // Return the error category
 		}
 
 		for (Map.Entry<String, List<String>> entry : categories.entrySet()) {
 			counter = 0;                                        // Counts the amount of found words in category
-			for (String w : wordsInFile) {                      // Loop trough all words in the file
+			for (String w : words) {                            // Loop trough all words in the file
 				if (entry.getValue().contains(w)) {             // Does word 'w' in the file exist in the 'List<String>' of category 'key'?
 					counter++;
 				}
@@ -66,14 +88,13 @@ public class ThemeClassifier {
 			if (counter < 1)                                    // Don't let the universe explode by dividing by zero :P
 				continue;
 
-			double probability = Math.log((double)counter / (double)wordsInFile.size()); // Calculate the probability that this category is the real category
+			double probability = Math.log((double)counter / (double)words.size()); // Calculate the probability that this category is the real category
 			System.out.println("In category " + entry.getKey() + " we found " + counter + " matching words. With a log probability of " + probability + ".");
 			if (currentLowestProbability < probability ) {      // Simple part divided by whole
 				currentLowestProbability = probability;         // If this is the current highest probability, set it so.
 				currentCategory = entry.getKey();
 			}
 		}
-
 		return currentCategory;                                 // Return highest probable category
 	}
 
@@ -107,8 +128,7 @@ public class ThemeClassifier {
 			return;
 		}
 
-		for (int i = 0, listOfFilesLength = listOfFiles.length; i < listOfFilesLength; i++) {
-			File file = listOfFiles[i];
+		for (File file : listOfFiles) {
 			categories.put(file.getName(), getFileWords(file));
 			System.out.println("File " + file.getName() + " was read.");
 		}
@@ -123,7 +143,6 @@ public class ThemeClassifier {
 	 */
 	private List<String> getFileWords(File file) {
 
-		String splitBy = ", ";
 		List<String> words = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -132,16 +151,11 @@ public class ThemeClassifier {
 
 				words.addAll(Arrays.asList(strings));
 			}
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		if (words.size() > 0)
-			return words;
-		else
-			return null;
+		return words.size() > 0 ? words : null;
 	}
 
 	/**
@@ -154,6 +168,5 @@ public class ThemeClassifier {
 		s = s.replaceAll("[^a-zA-Z\\s]", "");
 		s = s.toLowerCase();
 		return s.split("\\s+");
-
 	}
 }

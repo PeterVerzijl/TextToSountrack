@@ -16,6 +16,7 @@ import java.util.*;
 public class ReadEpub {
 	private Book book = null;
 	private HashMap<String,String> lines = null;
+	private HashMap<Integer,String> linesOrder = null;
 	private int pageNumber = 0;
 	private int paraGraph = 0;
 	private static final String SAVED_PAGES_FILE_PATH = "res/savedPages.sav";
@@ -61,7 +62,9 @@ public class ReadEpub {
 			}
 
 			lines = new HashMap<String, String>();
+			linesOrder = new HashMap<Integer, String>();
 			int words = 0;
+			int count = 0;
 			int currentPara = 0;
 			String line = "";
 			while (currentPara < tmp.size()) {
@@ -70,6 +73,8 @@ public class ReadEpub {
 				while (words < MAX_NUM_WORDS) {
 					if(currentPara == tmp.size()) {
 						lines.put(line,themeClassifier.getCategory(line));
+						linesOrder.put(count,line);
+						count++;
 						break;
 					}
 					words += tmp.get(currentPara).replaceAll("(<[^p][^<>]*>)", "").split(" ").length;
@@ -83,6 +88,8 @@ public class ReadEpub {
 							currentPara++;
 						}
 						lines.put(line, themeClassifier.getCategory(line));
+						linesOrder.put(count,line);
+						count++;
 						break;
 					}
 				}
@@ -117,17 +124,8 @@ public class ReadEpub {
 			setUpList();
 			paraGraph = 0;
 		}
-		int count = 0;
-		String page = "";
-		String mood = "";
-		for(String s : lines.keySet()) {
-			if(count == paraGraph) {
-				page = s;
-				mood = lines.get(s);
-				break;
-			}
-			count++;
-		}
+		String page = linesOrder.get(paraGraph);
+		String mood = lines.get(page);
 		System.out.println(mood);
 		return page.replaceAll("(<[^p][^<>]*>)", "");
 	}
@@ -145,17 +143,8 @@ public class ReadEpub {
 			setUpList();
 			paraGraph = lines.size() - 1;
 		}
-		int count = 0;
-		String page = "";
-		String mood = "";
-		for(String s : lines.keySet()) {
-			if(count == paraGraph) {
-				page = s;
-				mood = lines.get(s);
-				break;
-			}
-			count++;
-		}
+		String page = linesOrder.get(paraGraph);
+		String mood = lines.get(page);
 		System.out.println(mood);
 		return page.replaceAll("(<[^p][^<>]*>)", "");
 	}

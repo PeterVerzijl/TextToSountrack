@@ -14,3 +14,8 @@ hs_err_pid*
 .idea/
 *.iml
 *.iws
+
+# E-Reader config files
+res/recents.sav
+res/text.cfg
+res/savedPages.sav

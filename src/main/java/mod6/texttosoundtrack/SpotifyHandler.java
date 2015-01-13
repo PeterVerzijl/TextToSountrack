@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 
 public class SpotifyHandler {
     private JahSpotify jahSpotify;
+    private SpotifyPlaybackListener playbackListener;
 
     public static void main(final String[] args) {
         new SpotifyHandler();
@@ -54,6 +55,9 @@ public class SpotifyHandler {
             System.exit(1);
         }
 
+        playbackListener = new SpotifyPlaybackListener(jahSpotify);
+        jahSpotify.addPlaybackListener(playbackListener);
+
         //playTrack("spotify:track:6JEK0CvvjDjjMUBFoXShNZ");
     }
 
@@ -61,21 +65,61 @@ public class SpotifyHandler {
 
     }
 
-    public void playTrack(String trackId) {
+    /**
+     * Plays a track.
+     * This method may take up to 20 seconds to complete.
+     * @param trackId Spotify track id
+     * @return success Returns false if track could not be loaded (for example when track is not on spotify)
+     */
+    public boolean playTrack(String trackId) {
+        //trackId = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ";
+
+        Link link = Link.create(trackId);
+        System.out.println(link.getType());
+
         // Get a track.
-        Track t = JahSpotifyService.getInstance().getJahSpotify().readTrack(Link.create(trackId));
+        Track track = jahSpotify.readTrack(Link.create(trackId));
         // Wait for 10 seconds or until the track is loaded.
-        MediaHelper.waitFor(t, 10);
+        MediaHelper.waitFor(track, 10);
         // If the track is loaded, play it.
-        if (t.isLoaded()) {
-            jahSpotify.play(t.getId());
-            System.out.println("Playing track: " + t.getTitle());
+        if (track.isLoaded()) {
+            if (track.getTitle() != null && !track.getTitle().isEmpty()) {
+                playbackListener.setLoaded(false);
+                jahSpotify.play(track.getId());
+                // Wait until track starts playing to be sure it can actually be played.
+                MediaHelper.waitFor(playbackListener, 10);
+                if (jahSpotify.getStatus() == JahSpotify.PlayerStatus.PLAYING) {
+                    System.out.println(jahSpotify.getStatus() + ", is playing: " + playbackListener.isPlaying());
+                    System.out.println("Playing track: " + track + " with id " + track.getId());
+                    return true;
+                } else {
+                    System.out.println("Could not play that track");
+                }
+                return true;
+            } else {
+                System.out.println("Track is not on spotify");
+            }
         } else {
             System.out.println("Failed to load track");
         }
+        return false;
     }
 
+    /**
+     * Pause playing track.
+     * Does nothing if no track is playing.
+     */
     public void pauseTrack() {
         jahSpotify.pause();
     }
+
+    /*public boolean trackExists(String trackId) {
+        return trackExists(Link.create(trackId));
+    }
+
+    public boolean trackExists(Link link) {
+        Track track = jahSpotify.readTrack(link);
+        MediaHelper.waitFor(track, 5);
+        return track.getTitle() != null && !track.getTitle().isEmpty();
+    }*/
 }

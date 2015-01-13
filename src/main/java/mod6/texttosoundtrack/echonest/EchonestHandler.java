@@ -20,10 +20,11 @@ public class EchonestHandler {
         echoNest = new EchoNestAPI("CGV11LMHK97XRE10T");
     }
 
-    public boolean searchSong() {
+    public boolean searchSong() {           // http://developer.echonest.com/api/v4/song/search?api_key=CGV11LMHK97XRE10T&format=xml&mood=sad&min_instrumentalness=0.95&start=0&results=10
         SongParams params = new SongParams();
         params.add("mood", "happy");
         params.set("max_speechiness", "0.9");
+        params.set("min_instrumentalness", "0.95");
         params.add("bucket", "id:spotify");
         params.add("bucket", "tracks");
         try {

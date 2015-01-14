@@ -1,5 +1,7 @@
 package mod6.texttosoundtrack;
 
+import mod6.texttosoundtrack.echonest.EchonestMood;
+
 import java.io.File;
 
 /**
@@ -12,7 +14,7 @@ public class TestClass {
 	public static void main(String[] args) {
 
 		classifier = new ThemeClassifier("./TrainingData/");
-		String category = classifier.getCatagory(new File("./TommyTest.txt"));
-		System.out.println("The category of this text file is: " + category);
+		EchonestMood category = classifier.getCategory(new File("./TommyTest.txt"));
+		System.out.println("The category of this text file is: " + category.toString());
 	}
 }

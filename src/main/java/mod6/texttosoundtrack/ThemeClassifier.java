@@ -1,5 +1,7 @@
 package mod6.texttosoundtrack;
 
+import mod6.texttosoundtrack.echonest.EchonestMood;
+
 import java.io.*;
 import java.util.*;
 
@@ -38,7 +40,7 @@ public class ThemeClassifier {
 	 * @param file to find the category of.
 	 * @return A string containing the category.
 	 */
-	public String getCatagory(File file) {
+	public EchonestMood getCategory(File file) {
 
 		List<String> wordsInFile = getFileWords(file);                  // Tokenizes and gets the words from a text file
 
@@ -50,7 +52,7 @@ public class ThemeClassifier {
 	 * @param paragraph Tha paragraph that gets tokenized and categorized.
 	 * @return The category that was calculated
 	 */
-	public String getCategory(String paragraph) {
+	public EchonestMood getCategory(String paragraph) {
 
 		List<String> wordsInFile = Arrays.asList(getTokens(paragraph)); // Tokenizes and gets the words from a paragraph
 
@@ -62,7 +64,7 @@ public class ThemeClassifier {
 	 * @param words The list of words to calculate the category of.
 	 * @return Return the found category as a string.
 	 */
-	public String calculateCategory(List<String> words) {
+	public EchonestMood calculateCategory(List<String> words) {
 
 		if (categories.isEmpty()) {
 			System.err.println("The database has not been trained yet! Call the train function first!");
@@ -70,12 +72,12 @@ public class ThemeClassifier {
 		}
 
 		int counter;                                            // Counts the amount of matching words for each category
-		String currentCategory = "No category found!.";          // Default error message
+		String currentCategory = null;          // Default error message
 		double currentLowestProbability = -1000000000;          // Should be the lowest value possible
 
 		if (words == null || words.size() == 0) {
 			System.out.println("Error, no words in file!");     // When no words are in the file, give an error.
-			return currentCategory;                             // Return the error category
+			return null;                             // Return the error category
 		}
 
 		for (Map.Entry<String, List<String>> entry : categories.entrySet()) {
@@ -95,7 +97,12 @@ public class ThemeClassifier {
 				currentCategory = entry.getKey();
 			}
 		}
-		return currentCategory.substring(0, currentCategory.indexOf("."));                   // Return highest probable category without the .txt
+		if (currentCategory != null) {
+			return EchonestMood.valueOf(currentCategory.substring(0, currentCategory.indexOf(".")).toUpperCase());
+		} else {
+			return null;
+		}
+		//return currentCategory.substring(0, currentCategory.indexOf("."));                   // Return highest probable category without the .txt
 	}
 
 	/**

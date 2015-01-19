@@ -1,5 +1,7 @@
 package mod6.texttosoundtrack;
 
+import mod6.texttosoundtrack.echonest.EchonestHandler;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -48,6 +50,8 @@ public class GUI extends JFrame {
 
     private static final String RECENTS_FILE_PATH = "res/recent.sav";
     private static final String TEXT_CONFIG_FILE_PATH = "res/text.cfg";
+
+    private EchonestHandler echonestHandler;
 
     /**
      * The constructor of this class.
@@ -281,6 +285,8 @@ public class GUI extends JFrame {
         menubar.add(Box.createHorizontalGlue());
         menubar.add(help);
         setJMenuBar(menubar);
+
+        echonestHandler = new EchonestHandler();
     }
 
     /**
@@ -457,7 +463,7 @@ public class GUI extends JFrame {
      * @param path The path to the .epub file.
      */
     private void openBook(String path) {
-        rEpub = new ReadEpub(path);
+        rEpub = new ReadEpub(path, echonestHandler);
         textPane.setText(rEpub.getTitle());
         addToRecent(rEpub.getTitle(), path);
         menuGoTo.setEnabled(true);

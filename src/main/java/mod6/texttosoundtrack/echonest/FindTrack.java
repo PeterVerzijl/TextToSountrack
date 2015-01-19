@@ -1,27 +1,28 @@
 package mod6.texttosoundtrack.echonest;
 
 import mod6.texttosoundtrack.spotify.SpotifyHandler;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
-public class EchonestHandler {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+public class FindTrack implements Runnable {
     private SpotifyHandler spotifyHandler;
+    private EchonestMood mood;
 
-    public static void main(String[] args) {
-        EchonestHandler echonestHandler = new EchonestHandler();
-        //echonestHandler.searchSong();
-        //System.out.println(echonestHandler.searchSong());
-        echonestHandler.findTrack(EchonestMood.ACTION);
+    public FindTrack(SpotifyHandler spotifyHandler, EchonestMood mood) {
+        this.spotifyHandler = spotifyHandler;
+        this.mood = mood;
     }
 
-    public EchonestHandler() {
-        spotifyHandler = new SpotifyHandler();
-    }
-
-    public void findTrack(EchonestMood mood) {
-        System.out.println("Starting findTrack: " + System.currentTimeMillis());
-        Thread thread = new Thread(new FindTrack(spotifyHandler, mood));
-        thread.start();
-        System.out.println("Done with findtrack: " + System.currentTimeMillis());
-        /*if (mood != null) {
+    @Override
+    public void run() {
+        if (mood != null) {
             try {
                 URL url = new URL("http://developer.echonest.com/api/v4/song/search?api_key=CGV11LMHK97XRE10T&format=json&" +
                         "mood=" + mood.getEchonestMood() + "&min_instrumentalness=0.95&bucket=id:spotify&bucket=tracks");
@@ -42,16 +43,14 @@ public class EchonestHandler {
                         String trackId = (String) ((JSONObject) tracks.get(0)).get("foreign_id");
                         //Try to play track
                         if (spotifyHandler.playTrack(trackId)) {
-                            return true;
+                            break;
                         }
                     }
-
                 }
                 streamReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return false;*/
     }
 }

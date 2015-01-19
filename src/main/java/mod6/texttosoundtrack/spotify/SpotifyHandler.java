@@ -1,10 +1,11 @@
-package mod6.texttosoundtrack;
+package mod6.texttosoundtrack.spotify;
 
 import jahspotify.JahSpotify;
 import jahspotify.media.Link;
 import jahspotify.media.Track;
 import jahspotify.services.JahSpotifyService;
 import jahspotify.services.MediaHelper;
+import jahspotify.services.MediaPlayer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 public class SpotifyHandler {
     private JahSpotify jahSpotify;
     private SpotifyPlaybackListener playbackListener;
+    private Fade fade;
 
     public static void main(final String[] args) {
         new SpotifyHandler();
@@ -58,6 +60,7 @@ public class SpotifyHandler {
         playbackListener = new SpotifyPlaybackListener(jahSpotify);
         jahSpotify.addPlaybackListener(playbackListener);
 
+        fade = new Fade();
         //playTrack("spotify:track:6JEK0CvvjDjjMUBFoXShNZ");
     }
 
@@ -66,12 +69,22 @@ public class SpotifyHandler {
     }
 
     /**
-     * Plays a track.
-     * This method may take up to 20 seconds to complete.
+     * Plays a track, track does not start playing immediately.
+     *
      * @param trackId Spotify track id
-     * @return success Returns false if track could not be loaded (for example when track is not on spotify)
      */
-    public boolean playTrack(String trackId) {
+    public boolean playTrack(final String trackId) {
+        //TODO instantly return true if song is already playing
+
+        //Fade out previous track
+        System.out.println("fading out");
+
+        //This probably shouldn't be done using mediahelper (wait until timer completes)
+        fade.fadeOut();
+        MediaHelper.waitFor(fade, 10);
+
+        System.out.println("Done fading out: " + MediaPlayer.getInstance().getVolume());
+
         //trackId = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ";
 
         Link link = Link.create(trackId);
@@ -90,6 +103,8 @@ public class SpotifyHandler {
                 MediaHelper.waitFor(playbackListener, 2);
                 if (playbackListener.isLoaded()) {
                     System.out.println("Playing track: " + track + " with id " + track.getId());
+                    //Fade in new track
+                    fade.fadeIn();
                     return true;
                 } else {
                     System.out.println("Could not play that track");

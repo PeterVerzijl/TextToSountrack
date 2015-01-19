@@ -1,4 +1,4 @@
-package mod6.texttosoundtrack;
+package mod6.texttosoundtrack.spotify;
 
 import jahspotify.AbstractConnectionListener;
 import jahspotify.media.Loadable;

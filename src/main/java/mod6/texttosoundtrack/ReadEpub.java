@@ -22,7 +22,7 @@ public class ReadEpub {
     private int pageNumber = 0;
     private int paragraph = 0;
     private static final String SAVED_PAGES_FILE_PATH = "res/savedPages.sav";
-    private static final int MAX_NUM_WORDS = 100;
+    private static final int MAX_NUM_WORDS = 1000;
 
     private ThemeClassifier themeClassifier;
     private EchonestHandler echonestHandler;
@@ -32,9 +32,10 @@ public class ReadEpub {
      *
      * @param file The .epub file to open.
      */
-    public ReadEpub(String file) {
+    public ReadEpub(String file, EchonestHandler echonestHandler) {
         EpubReader epubReader = new EpubReader();
-        echonestHandler = new EchonestHandler();
+
+        this.echonestHandler = echonestHandler;
         try {
             book = epubReader.readEpub(new FileInputStream(file));
             themeClassifier = new ThemeClassifier("./TrainingData/");
@@ -133,6 +134,7 @@ public class ReadEpub {
 
         System.out.println("page category: " + mood);
         echonestHandler.findTrack(mood);
+        System.out.println("Found & playing track");
         //String mood = lines.get(page).getEchonestMood();
         //System.out.println(mood);
         return page.replaceAll("(<[^p][^<>]*>)", "");

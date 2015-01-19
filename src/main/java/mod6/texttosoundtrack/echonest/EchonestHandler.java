@@ -39,14 +39,12 @@ public class EchonestHandler {
                     responseStrBuilder.append(inputStr);
                 //new JSONObject(new JSONParser().parse(responseStrBuilder.toString()));
                 JSONObject json = (JSONObject) JSONValue.parse(responseStrBuilder.toString());
-                System.out.println("Input json: " + json);
                 JSONArray songArray = (JSONArray) ((JSONObject) json.get("response")).get("songs");
                 for (int i = 0; i < songArray.size(); i++) {
                     JSONObject song = (JSONObject) songArray.get(i);
                     JSONArray tracks = (JSONArray) song.get("tracks");
                     if (!tracks.isEmpty()) {
                         String trackId = (String) ((JSONObject) tracks.get(0)).get("foreign_id");
-                        System.out.println("Track id: " + trackId);
                         //Try to play track
                         if (spotifyHandler.playTrack(trackId)) {
                             return true;

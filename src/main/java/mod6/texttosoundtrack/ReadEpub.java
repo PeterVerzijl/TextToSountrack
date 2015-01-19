@@ -43,8 +43,10 @@ public class ReadEpub {
         }
     }
 
+    /**
+     * Called every time a new html file from the book is opened
+     */
     private void setupList() {
-
         List<Resource> contents = book.getContents();
         String page;
         try {
@@ -54,10 +56,6 @@ public class ReadEpub {
             page = page.replace("&amp;", "&");
             page = page.replaceAll("(<[^p][^<>]*>)", "");
 
-            EchonestMood mood = themeClassifier.getCategory(page);
-            System.out.println("page category: " + mood);
-            echonestHandler.findTrack(mood);
-
             String[] temp = page.split("(<p[^<>]*>)");
             ArrayList<String> paragraphs = new ArrayList<>(Arrays.asList(temp));
             paragraphs.removeAll(Arrays.asList("", null, "\n", "\t", "\\t", "\\n"));
@@ -66,8 +64,6 @@ public class ReadEpub {
                 if (line.matches("(\\s\\s)") || line.matches("\\s") || line.matches("\\s\\s\\s\\s\\n")) {
                     it.remove();
                 }
-                //The next line did nothing?
-                //line.replaceFirst("\\s\\s\\s", "");
             }
 
             lines = new HashMap<>();
@@ -133,6 +129,10 @@ public class ReadEpub {
             paragraph = 0;
         }
         String page = linesOrder.get(paragraph);
+        EchonestMood mood = lines.get(page);
+
+        System.out.println("page category: " + mood);
+        echonestHandler.findTrack(mood);
         //String mood = lines.get(page).getEchonestMood();
         //System.out.println(mood);
         return page.replaceAll("(<[^p][^<>]*>)", "");

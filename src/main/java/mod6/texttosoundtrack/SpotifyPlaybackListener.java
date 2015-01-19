@@ -17,8 +17,6 @@ public class SpotifyPlaybackListener extends AbstractPlaybackListener implements
     @Override
     public void trackStarted(Link link) {
         loaded = false;
-        System.out.println("Track started! " + link.getType());
-        System.out.println("Playing status: " + jahSpotify.getStatus());
     }
 
     @Override

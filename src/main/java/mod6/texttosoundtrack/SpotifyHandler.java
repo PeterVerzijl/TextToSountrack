@@ -75,7 +75,6 @@ public class SpotifyHandler {
         //trackId = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ";
 
         Link link = Link.create(trackId);
-        System.out.println("Track type: " + link.getType());
 
         // Get a track.
         Track track = jahSpotify.readTrack(Link.create(trackId));
@@ -90,7 +89,6 @@ public class SpotifyHandler {
                 // Wait until track starts playing to be sure it can actually be played.
                 MediaHelper.waitFor(playbackListener, 2);
                 if (playbackListener.isLoaded()) {
-                    System.out.println(jahSpotify.getStatus() + ", is playing: " + playbackListener.isPlaying());
                     System.out.println("Playing track: " + track + " with id " + track.getId());
                     return true;
                 } else {

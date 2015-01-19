@@ -22,7 +22,8 @@ public class ReadEpub {
     private int pageNumber = 0;
     private int paragraph = 0;
     private static final String SAVED_PAGES_FILE_PATH = "res/savedPages.sav";
-    private static final int MAX_NUM_WORDS = 1000;
+
+    private static final int MAX_NUM_WORDS = 200;
 
     private ThemeClassifier themeClassifier;
     private EchonestHandler echonestHandler;
@@ -124,7 +125,7 @@ public class ReadEpub {
      */
     public String nextParagraph() {
         paragraph++;
-        if (lines == null || paragraph >= lines.size() - 1) {
+        if (lines == null || paragraph >= lines.size()) {
             pageNumber++;
             setupList();
             paragraph = 0;

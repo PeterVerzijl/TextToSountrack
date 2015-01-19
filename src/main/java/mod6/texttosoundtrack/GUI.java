@@ -32,11 +32,9 @@ public class GUI extends JFrame {
 
     private JButton nextPage;
     private JButton previousPage;
-    private JButton feedBack;
     private JLabel volumeLabel;
     private JSlider volumeSlider;
 
-    private JMenuItem menuGoTo;
     private JMenuItem menuSavePage;
     private JMenuItem menuLoadPage;
 
@@ -147,19 +145,6 @@ public class GUI extends JFrame {
         //Navigation Menu (Menu bar)
         JMenu nav = new JMenu("Navigation");
 
-        menuGoTo = new JMenuItem("Go to...");
-        menuGoTo.setToolTipText("Go to a specific page");
-        menuGoTo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String tmp = JOptionPane.showInputDialog(null, "Go to which page?", null);
-                @SuppressWarnings("unused") int page = 0;
-                if (tmp != null)
-                    page = Integer.parseInt(tmp);
-                //textPane.setText(rEpub.goTo(page));
-            }
-        });
-
         menuSavePage = new JMenuItem("Save Page");
         menuSavePage.setToolTipText("Save the current page");
         menuSavePage.addActionListener(new ActionListener() {
@@ -179,14 +164,12 @@ public class GUI extends JFrame {
             }
         });
 
-        menuGoTo.setEnabled(false);
         menuSavePage.setEnabled(false);
         menuLoadPage.setEnabled(false);
 
         menuSavePage.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
         menuLoadPage.setAccelerator(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.Event.CTRL_MASK));
 
-        nav.add(menuGoTo);
         nav.add(menuSavePage);
         nav.add(menuLoadPage);
 
@@ -254,36 +237,10 @@ public class GUI extends JFrame {
         file.addSeparator();
         file.add(menuExit);
 
-        //Help Menu (Menu bar)
-        JMenu help = new JMenu("Help");
-
-        JMenuItem menuFAQ = new JMenuItem("FAQ", faq);
-        menuFAQ.setToolTipText("Frequently Asked Questions");
-        menuFAQ.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //Show FAQ
-            }
-        });
-
-        JMenuItem menuWordCount = new JMenuItem("Word count");
-        menuWordCount.setToolTipText("Get the current page's number of words");
-        menuWordCount.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int words = textPane.getText().split(" ").length;
-                JOptionPane.showMessageDialog(null, "The number of words on this page is: " + words + ".");
-            }
-        });
-
-        help.add(menuFAQ);
-        help.add(menuWordCount);
-
         menubar.add(file);
         menubar.add(nav);
         menubar.add(set);
         menubar.add(Box.createHorizontalGlue());
-        menubar.add(help);
         setJMenuBar(menubar);
 
         echonestHandler = new EchonestHandler();
@@ -349,14 +306,6 @@ public class GUI extends JFrame {
         JPanel panel2 = new JPanel();
         panel2.setLayout(new BorderLayout());
 
-        feedBack = new JButton("Feedback");
-        feedBack.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                sendFeedback();
-            }
-        });
-
         volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 50);
         volumeSlider.setMinorTickSpacing(5);
         volumeSlider.setPaintTicks(true);
@@ -370,8 +319,6 @@ public class GUI extends JFrame {
         });
 
         volumeLabel = new JLabel("Volume: " + volumeSlider.getValue() + "%");
-
-        panel2.add(feedBack, BorderLayout.NORTH);
         panel2.add(volumeLabel, BorderLayout.WEST);
         panel2.add(volumeSlider, BorderLayout.CENTER);
 
@@ -466,7 +413,6 @@ public class GUI extends JFrame {
         rEpub = new ReadEpub(path, echonestHandler);
         textPane.setText(rEpub.getTitle());
         addToRecent(rEpub.getTitle(), path);
-        menuGoTo.setEnabled(true);
         menuSavePage.setEnabled(true);
         menuLoadPage.setEnabled(true);
     }
@@ -536,12 +482,6 @@ public class GUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void sendFeedback() {
-        int tmp = JOptionPane.showConfirmDialog(null, "Are you sure you want to send feedback?", "Alert", JOptionPane.YES_NO_OPTION);
-        if (tmp == 0)
-            JOptionPane.showMessageDialog(null, "Thank you for your feedback!");
     }
 
     /**

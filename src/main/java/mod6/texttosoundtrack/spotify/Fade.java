@@ -13,13 +13,13 @@ public class Fade implements Loadable{
     public Fade() {
     }
 
-    public void fadeIn() {
+    public synchronized void fadeIn() {
         cancelRunning();
         fadeTask = new FadeTask(mediaPlayer, true);
         new Timer().scheduleAtFixedRate(fadeTask, 0, 10);
     }
 
-    public void fadeOut() {
+    public synchronized void fadeOut() {
         cancelRunning();
         fadeTask = new FadeTask(mediaPlayer, false);
         new Timer().scheduleAtFixedRate(fadeTask, 0, 10);

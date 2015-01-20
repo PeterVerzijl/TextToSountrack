@@ -15,20 +15,22 @@ public class FadeTask extends TimerTask {
     }
 
     public void fadeOut() {
-        mediaPlayer.setVolume(mediaPlayer.getVolume() - 1);
         if (mediaPlayer.getVolume() <= 0) {
             System.out.println("Cancelling fade out because volume is 0: " + mediaPlayer.getVolume());
             finished = true;
             cancel();
+        } else {
+            mediaPlayer.setVolume(mediaPlayer.getVolume() - 1);
         }
     }
 
     public void fadeIn() {
-        mediaPlayer.setVolume(mediaPlayer.getVolume() + 1);
         if (mediaPlayer.getVolume() >= 100) {
             System.out.println("Cancelling fade in because volume is 100: " + mediaPlayer.getVolume());
             finished = true;
             cancel();
+        } else {
+            mediaPlayer.setVolume(mediaPlayer.getVolume() + 1);
         }
     }
 

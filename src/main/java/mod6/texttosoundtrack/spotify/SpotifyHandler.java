@@ -6,6 +6,7 @@ import jahspotify.media.Track;
 import jahspotify.services.JahSpotifyService;
 import jahspotify.services.MediaHelper;
 import jahspotify.services.MediaPlayer;
+import mod6.texttosoundtrack.CustomMediaHelper;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -73,26 +74,30 @@ public class SpotifyHandler {
      *
      * @param trackId Spotify track id
      */
-    public boolean playTrack(final String trackId) {
+    public boolean playTrack(final String trackId) throws InterruptedException {
+        if (MediaPlayer.getInstance().getCurrentTrack() != null) {
+            System.out.println("Was playing: " + MediaPlayer.getInstance().getCurrentTrack().getId().getId());
+            if (MediaPlayer.getInstance().getCurrentTrack().getId().getId() == trackId){
+                System.out.println("That song was already playing, not changing song");
+                return true;
+            }
+        }
         //TODO instantly return true if song is already playing
 
         //Fade out previous track
-        System.out.println("fading out");
+        System.out.println("Fading out");
 
         //This probably shouldn't be done using mediahelper (wait until timer completes)
         fade.fadeOut();
-        MediaHelper.waitFor(fade, 10);
+        CustomMediaHelper.waitFor(fade, 10);
 
         System.out.println("Done fading out: " + MediaPlayer.getInstance().getVolume());
-
-        //trackId = "spotify:track:6JEK0CvvjDjjMUBFoXShNZ";
-
-        Link link = Link.create(trackId);
 
         // Get a track.
         Track track = jahSpotify.readTrack(Link.create(trackId));
         // Wait for 10 seconds or until the track is loaded.
-        MediaHelper.waitFor(track, 10);
+        CustomMediaHelper.waitFor(track, 10);
+
         // If the track is loaded, play it.
         if (track.isLoaded()) {
             if (track.getTitle() != null && !track.getTitle().isEmpty()) {
@@ -100,7 +105,7 @@ public class SpotifyHandler {
 
                 jahSpotify.play(track.getId());
                 // Wait until track starts playing to be sure it can actually be played.
-                MediaHelper.waitFor(playbackListener, 2);
+                CustomMediaHelper.waitFor(playbackListener, 2);
                 if (playbackListener.isLoaded()) {
                     System.out.println("Playing track: " + track + " with id " + track.getId());
                     //Fade in new track
@@ -125,14 +130,4 @@ public class SpotifyHandler {
     public void pauseTrack() {
         jahSpotify.pause();
     }
-
-    /*public boolean trackExists(String trackId) {
-        return trackExists(Link.create(trackId));
-    }
-
-    public boolean trackExists(Link link) {
-        Track track = jahSpotify.readTrack(link);
-        MediaHelper.waitFor(track, 5);
-        return track.getTitle() != null && !track.getTitle().isEmpty();
-    }*/
 }

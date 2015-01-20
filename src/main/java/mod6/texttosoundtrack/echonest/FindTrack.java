@@ -42,7 +42,12 @@ public class FindTrack implements Runnable {
                     if (!tracks.isEmpty()) {
                         String trackId = (String) ((JSONObject) tracks.get(0)).get("foreign_id");
                         //Try to play track
-                        if (spotifyHandler.playTrack(trackId)) {
+                        try {
+                            if (spotifyHandler.playTrack(trackId)) {
+                                break;
+                            }
+                        } catch (InterruptedException e) {
+                            System.out.println("Searching for songs interrupted");
                             break;
                         }
                     }

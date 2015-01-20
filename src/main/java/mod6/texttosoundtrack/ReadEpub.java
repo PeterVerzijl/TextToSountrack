@@ -52,6 +52,7 @@ public class ReadEpub {
         List<Resource> contents = book.getContents();
         String page;
         try {
+            if(pageNumber == contents.size() || pageNumber < 0) return;
             page = new String(contents.get(pageNumber).getData(), "UTF-8");
             page = page.replace("&mdash;", "-");
             page = page.replace("&nbsp;", "");
@@ -85,7 +86,7 @@ public class ReadEpub {
                     }
                     words += paragraphs.get(currentParagraph).replaceAll("(<[^p][^<>]*>)", "").split(" ").length;
                     if (words < MAX_NUM_WORDS) {
-                        line = line + paragraphs.get(currentParagraph).replaceAll("(<[^p][^<>]*>)", "");
+                        line = line + "\n" + paragraphs.get(currentParagraph).replaceAll("(<[^p][^<>]*>)", "");
                         currentParagraph++;
                     } else {
                         //Happens on last iteration of while loop (words is incremented > 100 a couple lines above this.

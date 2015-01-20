@@ -17,6 +17,13 @@ public class SpotifyHandler {
     private JahSpotify jahSpotify;
     private SpotifyPlaybackListener playbackListener;
     private Fade fade;
+    private String previousTrack;
+
+    //------------ Hack for predefined tracks --------------//
+    private String[] predefinedTracks = {"spotify:track:6JEK0CvvjDjjMUBFoXShNZ"};
+    private int currentSong = 0;
+    //---------- End hack for predefined tracks ------------//
+
 
     public static void main(final String[] args) {
         new SpotifyHandler();
@@ -74,10 +81,12 @@ public class SpotifyHandler {
      *
      * @param trackId Spotify track id
      */
-    public boolean playTrack(final String trackId) throws InterruptedException {
-        if (MediaPlayer.getInstance().getCurrentTrack() != null) {
-            System.out.println("Was playing: " + MediaPlayer.getInstance().getCurrentTrack().getId().getId());
-            if (MediaPlayer.getInstance().getCurrentTrack().getId().getId() == trackId){
+    public boolean playTrack(String trackId) throws InterruptedException {
+        //trackId = predefinedTracks[currentSong];
+        //currentSong++;
+
+        if (previousTrack != null) {
+            if (previousTrack.equals(trackId)){
                 System.out.println("That song was already playing, not changing song");
                 return true;
             }
@@ -87,16 +96,23 @@ public class SpotifyHandler {
         //Fade out previous track
         System.out.println("Fading out");
 
-        //This probably shouldn't be done using mediahelper (wait until timer completes)
-        fade.fadeOut();
-        CustomMediaHelper.waitFor(fade, 10);
-
-        System.out.println("Done fading out: " + MediaPlayer.getInstance().getVolume());
-
         // Get a track.
         Track track = jahSpotify.readTrack(Link.create(trackId));
         // Wait for 10 seconds or until the track is loaded.
         CustomMediaHelper.waitFor(track, 10);
+
+        //------------ Hack for predefined tracks --------------//
+        if (track.getTitle().contains("Yorkshire") || track.getTitle().contains("Sunset Finale")) {
+            System.out.println("Ignored non existant action songs because of test");
+            return false;
+        }
+        //---------- End hack for predefined tracks ------------//
+
+        //This probably shouldn't be done using mediahelper (wait until timer completes)
+        FadeTask fadeTask = fade.fadeOut();
+        CustomMediaHelper.waitFor(fadeTask, 10);
+
+        System.out.println("Done fading out: " + MediaPlayer.getInstance().getVolume());
 
         // If the track is loaded, play it.
         if (track.isLoaded()) {
@@ -110,9 +126,11 @@ public class SpotifyHandler {
                     System.out.println("Playing track: " + track + " with id " + track.getId());
                     //Fade in new track
                     fade.fadeIn();
+                    previousTrack = trackId;
                     return true;
                 } else {
                     System.out.println("Could not play that track");
+                    previousTrack = null;
                 }
             } else {
                 System.out.println("Track is not on spotify");

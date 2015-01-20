@@ -1,7 +1,8 @@
 package mod6.texttosoundtrack.echonest;
 
 public enum EchonestMood {
-    ACTION ("energetic"), BOMBASTIC("happy"), EERINESS("eerie"), HAPPY("happy"), NEUTRAL("ambient"), PEACEFUL("peaceful"), ROMANTIC("romantic"), SAD("sad"), SILENCE("calming"), THRILLING("cool");
+    ACTION ("aggresive"), BOMBASTIC("happy"), EERINESS("haunting"), HAPPY("happy"), NEUTRAL("ambient"), PEACEFUL("peaceful"), ROMANTIC("romantic"), SAD("sad"), SILENCE("calming"), THRILLING
+            ("thrilling");
 
     private String echonestMood;
 

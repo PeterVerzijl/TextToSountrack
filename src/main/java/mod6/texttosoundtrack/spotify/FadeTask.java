@@ -1,10 +1,11 @@
 package mod6.texttosoundtrack.spotify;
 
+import jahspotify.media.Loadable;
 import jahspotify.services.MediaPlayer;
 
 import java.util.TimerTask;
 
-public class FadeTask extends TimerTask {
+public class FadeTask extends TimerTask implements Loadable {
     private MediaPlayer mediaPlayer;
     private boolean fadeIn;
     private boolean finished = false;
@@ -45,5 +46,15 @@ public class FadeTask extends TimerTask {
 
     public boolean isFinished() {
         return finished;
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return finished;
+    }
+
+    @Override
+    public void setLoaded(boolean finished) {
+        this.finished = finished;
     }
 }

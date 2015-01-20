@@ -319,6 +319,8 @@ public class GUI extends JFrame {
         });
 
         volumeLabel = new JLabel("Volume: " + volumeSlider.getValue() + "%");
+        Dimension d = volumeLabel.getPreferredSize();
+        volumeLabel.setPreferredSize(new Dimension(d.width+10,d.height));
         panel2.add(volumeLabel, BorderLayout.WEST);
         panel2.add(volumeSlider, BorderLayout.CENTER);
 

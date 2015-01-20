@@ -156,6 +156,10 @@ public class ReadEpub {
             paragraph = lines.size() - 1;
         }
         String page = linesOrder.get(paragraph);
+        EchonestMood mood = lines.get(page);
+        System.out.println("page category: " + mood);
+        echonestHandler.findTrack(mood);
+        System.out.println("Found & playing track");
         //String mood = lines.get(page).getEchonestMood();
         //System.out.println(mood);
         return page.replaceAll("(<[^p][^<>]*>)", "");

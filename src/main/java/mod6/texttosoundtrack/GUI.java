@@ -263,7 +263,7 @@ public class GUI extends JFrame {
         styledDocument = new DefaultStyledDocument();
         textPane = new JTextPane(styledDocument);
         textPane.setEditable(false);
-        textPane.addMouseListener(new MouseAdapter() {
+        /*textPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1)
@@ -273,7 +273,7 @@ public class GUI extends JFrame {
                     if (rEpub != null)
                         textPane.setText(rEpub.previousParagraph());
             }
-        });
+        });*/
         c.add(textPane, BorderLayout.CENTER);
         LoadTextSettings();
         UpdateText();
@@ -332,8 +332,8 @@ public class GUI extends JFrame {
 
         setFocusable(true);
 
-        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new KeyDispatcher());
+        /*KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new KeyDispatcher());*/
     }
 
     /**

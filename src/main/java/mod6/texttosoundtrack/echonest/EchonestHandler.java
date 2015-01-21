@@ -5,6 +5,7 @@ import mod6.texttosoundtrack.spotify.SpotifyHandler;
 public class EchonestHandler {
     private SpotifyHandler spotifyHandler;
     private Thread searchThread;
+    private EchonestMood previousMood;
 
     public static void main(String[] args) {
         EchonestHandler echonestHandler = new EchonestHandler();
@@ -18,6 +19,10 @@ public class EchonestHandler {
     }
 
     public void findTrack(EchonestMood mood) {
+        if (previousMood == mood) {
+            System.out.println("Mood is the same as previous mood, not going to change song.");
+            return;
+        }
         if (searchThread != null && searchThread.isAlive()) {
             System.out.println("Interrupting thread!");
             searchThread.interrupt();
@@ -28,6 +33,7 @@ public class EchonestHandler {
             }
         }
 
+        previousMood = mood;
         searchThread = new Thread(new FindTrack(spotifyHandler, mood));
         searchThread.start();
     }

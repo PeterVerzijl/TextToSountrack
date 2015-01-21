@@ -17,13 +17,6 @@ public class SpotifyHandler {
     private JahSpotify jahSpotify;
     private SpotifyPlaybackListener playbackListener;
     private Fade fade;
-    private String previousTrack;
-
-    //------------ Hack for predefined tracks --------------//
-    private String[] predefinedTracks = {"spotify:track:6JEK0CvvjDjjMUBFoXShNZ"};
-    private int currentSong = 0;
-    //---------- End hack for predefined tracks ------------//
-
 
     public static void main(final String[] args) {
         new SpotifyHandler();
@@ -82,17 +75,6 @@ public class SpotifyHandler {
      * @param trackId Spotify track id
      */
     public boolean playTrack(String trackId) throws InterruptedException {
-        //trackId = predefinedTracks[currentSong];
-        //currentSong++;
-
-        if (previousTrack != null) {
-            if (previousTrack.equals(trackId)){
-                System.out.println("That song was already playing, not changing song");
-                return true;
-            }
-        }
-        //TODO instantly return true if song is already playing
-
         //Fade out previous track
         System.out.println("Fading out");
 
@@ -101,14 +83,6 @@ public class SpotifyHandler {
         // Wait for 10 seconds or until the track is loaded.
         CustomMediaHelper.waitFor(track, 10);
 
-        //------------ Hack for predefined tracks --------------//
-        if (track.getTitle().contains("Yorkshire") || track.getTitle().contains("Sunset Finale")) {
-            System.out.println("Ignored non existant action songs because of test");
-            return false;
-        }
-        //---------- End hack for predefined tracks ------------//
-
-        //This probably shouldn't be done using mediahelper (wait until timer completes)
         FadeTask fadeTask = fade.fadeOut();
         CustomMediaHelper.waitFor(fadeTask, 10);
 
@@ -126,11 +100,9 @@ public class SpotifyHandler {
                     System.out.println("Playing track: " + track + " with id " + track.getId());
                     //Fade in new track
                     fade.fadeIn();
-                    previousTrack = trackId;
                     return true;
                 } else {
                     System.out.println("Could not play that track");
-                    previousTrack = null;
                 }
             } else {
                 System.out.println("Track is not on spotify");

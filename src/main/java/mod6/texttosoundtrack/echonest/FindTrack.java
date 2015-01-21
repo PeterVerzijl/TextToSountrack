@@ -25,7 +25,7 @@ public class FindTrack implements Runnable {
         if (mood != null) {
             try {
                 URL url = new URL("http://developer.echonest.com/api/v4/song/search?api_key=CGV11LMHK97XRE10T&format=json&" +
-                        "mood=" + mood.getEchonestMood() + "&min_instrumentalness=0.95&bucket=id:spotify&bucket=tracks");
+                        "mood=" + mood.getEchonestMood() + "&min_instrumentalness=0.95&min_duration=120&bucket=id:spotify&bucket=tracks");
                 URLConnection urlConnection = url.openConnection();
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
                 StringBuilder responseStrBuilder = new StringBuilder();
